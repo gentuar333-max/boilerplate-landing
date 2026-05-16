@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google-site-verification" content="Q2orE230Gi2rl-5emUjDVGc50zqpw5v6wS3ZvHa2Izk" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -580,10 +577,10 @@ footer span {
   <div class="hero-left">
     <div class="badge">Early Access &mdash; Free</div>
 
-    <h1>Skip setup.<br>Ship on <span class="hl">day one.</span></h1>
+    <h1>Every project starts<br>with 2 wasted days.<br><span class="hl">Yours doesn't have to.</span></h1>
 
     <p class="hero-desc">
-      Pick your stack, get a complete production-ready scaffold in 30 seconds. No hello-world templates — real projects, real structure.
+      Production scaffolds for developers who ship. Pick your stack, get 14+ files ready in 30 seconds — typed configs, CI, env, README included.
     </p>
 
     <ul class="vlist">
@@ -620,7 +617,7 @@ footer span {
       </div>
     </div>
     <div class="success-msg" id="heroSuccess">
-      You are on the list — <strong>we will email you this week.</strong><br>
+      __SUCCESS_CTA__<br>
       Tell one dev friend and help us build this right.
     </div>
   </div>
@@ -722,7 +719,7 @@ footer span {
 <!-- Bottom CTA -->
 <section class="cta-section">
   <div class="cta-inner">
-    <h2>Stop writing<br><span class="hl">boilerplate.</span></h2>
+    <h2>Your next project<br>starts <span class="hl">right now.</span></h2>
     <p>
       Join <strong class="js-count">12</strong> developers skipping setup and shipping faster.<br>
       Early access is completely free.
@@ -741,7 +738,7 @@ footer span {
       </div>
     </div>
     <div class="success-msg" id="ctaSuccess">
-      You are on the list — <strong>we will email you this week.</strong>
+      __SUCCESS_CTA__
     </div>
   </div>
 </section>
@@ -808,13 +805,34 @@ function sub(which) {
     setTimeout(() => input.style.outline = '', 1500);
     return;
   }
+
+  fetch('https://formspree.io/f/mvzyppyz', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  });
+
   const prev = total();
   save(email);
   const now = total();
   animCount(prev, now);
   if (now > prev) addAvatar();
-  document.getElementById(which === 'hero' ? 'heroForm' : 'ctaForm').style.display = 'none';
-  document.getElementById(which === 'hero' ? 'heroSuccess' : 'ctaSuccess').style.display = 'block';
+
+  const shareUrl = encodeURIComponent(window.location.href);
+  const shareText = encodeURIComponent('Every project starts with 2 wasted days. Yours doesn\'t have to — check out Boilerplate:');
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
+
+  const successId = which === 'hero' ? 'heroSuccess' : 'ctaSuccess';
+  const formId = which === 'hero' ? 'heroForm' : 'ctaForm';
+  document.getElementById(formId).style.display = 'none';
+  document.getElementById(successId).innerHTML = `
+    <div style="margin-bottom:0.6rem">You are <strong style="color:var(--orange)">#${now}</strong> on the waitlist — we will email you this week.</div>
+    <div style="font-size:0.88rem;color:var(--muted);margin-bottom:0.85rem">Share with a dev friend and move up the list.</div>
+    <a href="${twitterUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.55rem 1.1rem;background:var(--orange);color:#0d0e12;border-radius:6px;font-size:0.82rem;font-weight:700;text-decoration:none" onmouseover="this.style.background='var(--orange2)'" onmouseout="this.style.background='var(--orange)'">
+      Share on X &rarr;
+    </a>
+  `;
+  document.getElementById(successId).style.display = 'block';
 }
 
 document.getElementById('heroEmail').addEventListener('keydown', e => { if (e.key === 'Enter') sub('hero'); });
